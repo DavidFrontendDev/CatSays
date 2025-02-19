@@ -16,7 +16,6 @@ function StarterCats() {
         const catImages = cats.map(
           (cat) => `https://cataas.com/cat/${cat.id}?random=${Math.random()}`
         );
-        console.log(catImages);
         setData(catImages);
       } catch (error) {
         console.error("Error fetching cat images:", error);
