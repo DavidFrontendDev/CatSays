@@ -4,21 +4,26 @@ function StarterCats() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    async function fetchCats() {
+    async function fetchRandomCats() {
       try {
-        const response = await fetch("https://cataas.com/api/cats?limit=10");
-        if (!response.ok) throw new Error("Error al obtener las imágenes");
-
+        const response = await fetch(
+          `https://cataas.com/api/cats?limit=10&skip=${Math.floor(
+            Math.random() * 100
+          )}`
+        );
+        if (!response.ok) throw new Error("Error trying to get imgs");
         const cats = await response.json();
-        const catImages = cats.map((cat) => `https://cataas.com/cat/${cat.id}`);
-
+        const catImages = cats.map(
+          (cat) => `https://cataas.com/cat/${cat.id}?random=${Math.random()}`
+        );
+        console.log(catImages);
         setData(catImages);
       } catch (error) {
         console.error("Error fetching cat images:", error);
       }
     }
 
-    fetchCats();
+    fetchRandomCats();
   }, []);
 
   return (
