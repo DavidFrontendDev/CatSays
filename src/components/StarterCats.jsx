@@ -1,26 +1,35 @@
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function StarterCats() {
   const [data, setData] = useState([]);
+
   useEffect(() => {
-    async function principalData() {
-      const data = await fetch("https://cataas.com/cat/gif?json=true");
-      const dataJson = await data.json();
-      setData((prev) => [...prev, dataJson]);
+    async function fetchCats() {
+      try {
+        const requests = Array.from({ length: 10 }, async () => {
+          const response = await fetch("https://cataas.com/cat/gif");
+          if (!response.ok) throw new Error("Error al obtener el GIF");
+          const blob = await response.blob();
+          return URL.createObjectURL(blob);
+        });
+
+        const catGifs = await Promise.all(requests);
+        setData(catGifs);
+      } catch (error) {
+        console.error("Error fetching cat GIFs:", error);
+      }
     }
-    for (let i = 0; i < 10; i++) {
-      principalData();
-    }
+
+    fetchCats();
   }, []);
+
   return (
-    <main className="container mt-5 bg-dark rounded shadow-xl py-3  ">
+    <main className="container mt-5 bg-dark rounded shadow-xl py-3">
       <h3 className="text-center text-white">Some Random Cat Gifs:</h3>
-      <article className="d-flex align-items-center justify-content-center flex-wrap gap-1 ">
-        {data.map((item, index) => (
+      <article className="d-flex align-items-center justify-content-center flex-wrap gap-2">
+        {data.map((gifUrl, index) => (
           <img
-            src={item.url}
+            src={gifUrl}
             key={index}
             height={250}
             width={250}
